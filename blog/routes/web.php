@@ -20,3 +20,24 @@ Route::get('/', function () {
 
 Route::get('/test', [TestController::class, 'index']);
 Route::get('/hello', [TestController::class, 'hello']);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['middleware' => 'auth'], function() {
+    Route::group([
+        'middleware' => 'role:lecture',
+        'prefix' => 'lecture',
+        'as' => 'lecture.'
+    ], function() {
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'lecture'])->name('home');
+    });
+
+    Route::group([
+        'middleware' => 'role:student',
+        'prefix' => 'student',
+        'as' => 'student.'
+    ], function() {
+        Route::get('/', [App\Http\Controllers\HomeController::class, 'student'])->name('home');
+    });
+});
