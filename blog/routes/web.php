@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\LectureController;
+use App\Http\Controllers\StudentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +32,22 @@ Route::group(['middleware' => 'auth'], function() {
         'prefix' => 'lecture',
         'as' => 'lecture.'
     ], function() {
-        Route::get('/', [App\Http\Controllers\HomeController::class, 'lecture'])->name('home');
+        Route::get('/', [App\Http\Controllers\LectureController::class, 'index'])->name('index');
+        Route::get('/create', [App\Http\Controllers\LectureController::class, 'create'])->name('create');
+        Route::post('/store', [App\Http\Controllers\LectureController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [LectureController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [LectureController::class, 'update'])->name('update');
+        Route::delete('/{id}', [LectureController::class, 'destroy'])->name('destroy');
+
+        // relationships
+        Route::get('/{id}/student', [LectureController::class, 'student'])->name('student');
+
+        // Trash
+        Route::get('/recycle_bin', [LectureController::class, 'recycle_bin'])->name('recycle.bin');
+        Route::post('/{id}/restore', [LectureController::class, 'restore'])->name('restore');
+        Route::post('/restore/all', [LectureController::class, 'restore_all'])->name('restore.all');
+        Route::post('/{id}/delete', [LectureController::class, 'delete'])->name('delete');
+        Route::post('/empty', [LectureController::class, 'empty'])->name('empty');
     });
 
     Route::group([
@@ -38,6 +55,6 @@ Route::group(['middleware' => 'auth'], function() {
         'prefix' => 'student',
         'as' => 'student.'
     ], function() {
-        Route::get('/', [App\Http\Controllers\HomeController::class, 'student'])->name('home');
+        Route::get('/', [StudentController::class, 'index'])->name('index');
     });
 });
